@@ -94,17 +94,36 @@
     </div>
 
     <script>
-        // 1. On lit la mémoire du téléphone AVANT le réseau
+        const SUPABASE_URL = 'https://afkungjbyjxibnkkflab.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_YI20-tV_eeIysnLJtnoQkA_GcF3VR74';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         let user = JSON.parse(localStorage.getItem('rallyo_user'));
         if (!user) window.location.href = 'index.html';
-        
-        // Affichage instantané du solde (plus de bug à 0)
-        document.getElementById('user-balance').textContent = Number(user.balance || 0).toLocaleString() + " FCFA";
 
-        // 2. On initialise les icônes
-        if (window.lucide) lucide.createIcons();
+        document.getElementById('user-balance').textContent = `${Number(user.balance || 0).toLocaleString()} FCFA`;
 
-        // 3. Fonctions de pointage (intégrées directement pour éviter les bugs)
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.lucide) lucide.createIcons();
+            checkDailyClaimStatus();
+            loadPlans();
+            syncDataBackground();
+        });
+
+        async function syncDataBackground() {
+            try {
+                const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+                if (data && !error) {
+                    if (Number(data.balance) !== Number(user.balance) || data.last_claim_date !== user.last_claim_date) {
+                        user = data;
+                        localStorage.setItem('rallyo_user', JSON.stringify(user));
+                        document.getElementById('user-balance').textContent = `${Number(user.balance).toLocaleString()} FCFA`;
+                        checkDailyClaimStatus();
+                    }
+                }
+            } catch (e) {}
+        }
+
         function checkDailyClaimStatus() {
             const today = new Date().toISOString().split('T')[0];
             if (user.last_claim_date === today) {
@@ -113,41 +132,37 @@
                     btn.textContent = "Déjà pointé";
                     btn.disabled = true;
                     btn.className = "bg-gray-300 text-gray-600 font-bold text-xs px-4 py-2.5 rounded-xl cursor-not-allowed";
-                    document.getElementById('claim-subtitle').textContent = "Revenez demain";
+                    document.getElementById('claim-subtitle').textContent = "Revenez demain pour un nouveau bonus";
                 }
             }
         }
-        checkDailyClaimStatus();
 
         async function claimDaily() {
             const today = new Date().toISOString().split('T')[0];
             if (user.last_claim_date === today) return alert("Déjà réclamé aujourd'hui !");
-            
-            let newBalance = Number(user.balance) + 50;
+
+            const newBalance = Number(user.balance) + 50;
             user.balance = newBalance;
             user.last_claim_date = today;
             localStorage.setItem('rallyo_user', JSON.stringify(user));
+            document.getElementById('user-balance').textContent = `${newBalance.toLocaleString()} FCFA`;
             
-            document.getElementById('user-balance').textContent = newBalance.toLocaleString() + " FCFA";
-            document.getElementById('claim-btn').textContent = "Déjà pointé";
-            document.getElementById('claim-btn').disabled = true;
-            document.getElementById('claim-btn').className = "bg-gray-300 text-gray-600 font-bold text-xs px-4 py-2.5 rounded-xl cursor-not-allowed";
-            document.getElementById('claim-subtitle').textContent = "Revenez demain";
-            
-            alert("Bonus de 50 FCFA récupéré !");
-            
-            // Mise à jour Supabase en arrière-plan
+            const btn = document.getElementById('claim-btn');
+            btn.textContent = "Déjà pointé";
+            btn.disabled = true;
+            btn.className = "bg-gray-300 text-gray-600 font-bold text-xs px-4 py-2.5 rounded-xl cursor-not-allowed";
+            document.getElementById('claim-subtitle').textContent = "Revenez demain pour un nouveau bonus";
+
             try {
-                const supabase = window.supabase.createClient('https://afkungjbyjxibnkkflab.supabase.co', 'sb_publishable_YI20-tV_eeIysnLJtnoQkA_GcF3VR74');
                 await supabase.from('profiles').update({ balance: newBalance, last_claim_date: today }).eq('id', user.id);
+                alert("Bonus de 50 FCFA récupéré !");
             } catch(e) {}
         }
 
-        // 4. Chargement des lignes recommandées
         function loadPlans() {
             const displayPlans = [
-                { category: "Grand public", title: "Ligne Cuisine & Maison", daily_income: 1000, price: 4000 },
-                { category: "Grand public", title: "Ligne Électroménager", daily_income: 2530, price: 10000 }
+                { category: "Grand public", title: "Ligne Cuisine & Maison", daily_income: 1000, price: 3000 },
+                { category: "Grand public", title: "Ligne Électroménager", daily_income: 2530, price: 7000 }
             ];
 
             const container = document.getElementById('plans-container');
@@ -167,7 +182,6 @@
                 </div>
             `).join('');
         }
-        loadPlans();
     </script>
 </body>
 </html>
