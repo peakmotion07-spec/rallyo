@@ -58,7 +58,20 @@
                         <p id="claim-subtitle" class="text-xs text-gray-500">Réclamez votre bonus de connexion</p>
                     </div>
                 </div>
-                <button onclick="claimDaily()" id="claim-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-sm transition">
+                <!-- Action directe dans le bouton pour éviter les bugs -->
+                <button type="button" onclick="
+                    let u = JSON.parse(localStorage.getItem('rallyo_user'));
+                    if(!u) return;
+                    let today = new Date().toISOString().split('T')[0];
+                    if(u.last_claim_date === today) { alert('Déjà réclamé aujourd\'hui !'); return; }
+                    
+                    let newBalance = Number(u.balance) + 50;
+                    u.balance = newBalance;
+                    u.last_claim_date = today;
+                    localStorage.setItem('rallyo_user', JSON.stringify(u));
+                    alert('Bonus de 50 FCFA récupéré !');
+                    window.location.reload();
+                " id="claim-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-sm transition">
                     +50 FCFA
                 </button>
             </div>
@@ -79,7 +92,7 @@
                     <a href="lines.html" class="text-xs font-bold text-red-600">Tout voir ></a>
                 </div>
 
-                <!-- LIGNES EN DUR POUR ÉVITER LES BUGS -->
+                <!-- LIGNES EN DUR -->
                 <div class="space-y-3">
                     <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center justify-between">
                         <div>
@@ -117,56 +130,27 @@
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://afkungjbyjxibnkkflab.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_YI20-tV_eeIysnLJtnoQkA_GcF3VR74';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        let user = JSON.parse(localStorage.getItem('rallyo_user'));
-        if (!user) window.location.href = 'index.html';
-
-        // Affichage immédiat du solde depuis le téléphone
-        document.getElementById('user-balance').textContent = `${Number(user.balance || 0).toLocaleString()} FCFA`;
-
-        // Force l'affichage des icônes à plusieurs reprises
+        // Force le chargement des icônes plusieurs fois
         function loadIcons() { if (window.lucide) lucide.createIcons(); }
         window.onload = loadIcons;
         setTimeout(loadIcons, 1000);
         setTimeout(loadIcons, 2500);
 
-        function checkDailyClaimStatus() {
-            const today = new Date().toISOString().split('T')[0];
-            if (user.last_claim_date === today) {
-                const btn = document.getElementById('claim-btn');
-                if(btn) {
-                    btn.textContent = "Déjà pointé";
-                    btn.disabled = true;
-                    btn.className = "bg-gray-300 text-gray-600 font-bold text-xs px-4 py-2.5 rounded-xl cursor-not-allowed";
-                    document.getElementById('claim-subtitle').textContent = "Revenez demain pour un nouveau bonus";
-                }
-            }
-        }
-        checkDailyClaimStatus();
+        // Affichage du solde
+        let user = JSON.parse(localStorage.getItem('rallyo_user'));
+        if (!user) window.location.href = 'index.html';
+        document.getElementById('user-balance').textContent = `${Number(user.balance || 0).toLocaleString()} FCFA`;
 
-        async function claimDaily() {
-            const today = new Date().toISOString().split('T')[0];
-            if (user.last_claim_date === today) return alert("Déjà réclamé aujourd'hui !");
-
-            const newBalance = Number(user.balance) + 50;
-            user.balance = newBalance;
-            user.last_claim_date = today;
-            localStorage.setItem('rallyo_user', JSON.stringify(user));
-            document.getElementById('user-balance').textContent = `${newBalance.toLocaleString()} FCFA`;
-            
+        // Bloquer le bouton si déjà pointé aujourd'hui
+        const today = new Date().toISOString().split('T')[0];
+        if (user.last_claim_date === today) {
             const btn = document.getElementById('claim-btn');
-            btn.textContent = "Déjà pointé";
-            btn.disabled = true;
-            btn.className = "bg-gray-300 text-gray-600 font-bold text-xs px-4 py-2.5 rounded-xl cursor-not-allowed";
-            document.getElementById('claim-subtitle').textContent = "Revenez demain pour un nouveau bonus";
-
-            try {
-                await supabase.from('profiles').update({ balance: newBalance, last_claim_date: today }).eq('id', user.id);
-                alert("Bonus de 50 FCFA récupéré !");
-            } catch(e) {}
+            if(btn) {
+                btn.textContent = "Déjà pointé";
+                btn.disabled = true;
+                btn.className = "bg-gray-300 text-gray-600 font-bold text-xs px-4 py-2.5 rounded-xl cursor-not-allowed";
+                document.getElementById('claim-subtitle').textContent = "Revenez demain";
+            }
         }
     </script>
 </body>
