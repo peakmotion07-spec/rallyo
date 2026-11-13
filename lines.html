@@ -272,14 +272,19 @@
         </div>
 
         <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-200 py-3 px-6 flex justify-between items-center z-50">
-            <a href="home.html" class="flex flex-col items-center text-gray-400"><span class="text-[11px] font-bold">Accueil</span></a>
-            <a href="lines.html" class="flex flex-col items-center text-red-600"><span class="text-[11px] font-bold">Lignes</span></a>
-            <a href="team.html" class="flex flex-col items-center text-gray-400"><span class="text-[11px] font-bold">Équipe</span></a>
-            <a href="profile.html" class="flex flex-col items-center text-gray-400"><span class="text-[11px] font-bold">Profil</span></a>
+            <a href="home.html" class="flex flex-col items-center text-gray-400"><i data-lucide="home" class="w-5 h-5"></i><span class="text-[10px] font-semibold mt-1">Accueil</span></a>
+            <a href="lines.html" class="flex flex-col items-center text-red-600"><i data-lucide="layers" class="w-5 h-5"></i><span class="text-[10px] font-bold mt-1">Lignes</span></a>
+            <a href="team.html" class="flex flex-col items-center text-gray-400"><i data-lucide="users" class="w-5 h-5"></i><span class="text-[10px] font-semibold mt-1">Équipe</span></a>
+            <a href="profile.html" class="flex flex-col items-center text-gray-400"><i data-lucide="user" class="w-5 h-5"></i><span class="text-[10px] font-semibold mt-1">Profil</span></a>
         </div>
     </div>
 
     <script>
+        function loadIcons() { if (window.lucide) lucide.createIcons(); }
+        window.onload = loadIcons;
+        setTimeout(loadIcons, 1000);
+        setTimeout(loadIcons, 2500);
+
         let supabase = null;
         try { supabase = window.supabase.createClient('https://afkungjbyjxibnkkflab.supabase.co', 'sb_publishable_YI20-tV_eeIysnLJtnoQkA_GcF3VR74'); } catch(e) {}
 
