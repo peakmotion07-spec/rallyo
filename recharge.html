@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rallyo - Dépôt</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans antialiased pb-32">
+
+    <div class="max-w-md mx-auto min-h-screen bg-gray-50 flex flex-col shadow-xl relative">
+        
+        <!-- En-tête -->
+        <div class="bg-white px-4 pt-5 pb-4 border-b border-gray-200 flex justify-between items-center sticky top-0 z-40">
+            <div class="flex items-center gap-3">
+                <a href="home.html" class="text-gray-800"><i data-lucide="chevron-left" class="w-6 h-6"></i></a>
+                <h1 class="text-base font-bold text-gray-900">Dépôt</h1>
+            </div>
+            <a href="deposit-history.html" class="text-xs font-bold text-blue-600">Historique</a>
+        </div>
+
+        <!-- Corps -->
+        <div class="flex-1 px-4 py-4 space-y-4">
+            
+            <!-- Solde Actuel -->
+            <div class="bg-slate-900 text-white p-5 rounded-2xl relative overflow-hidden shadow-md">
+                <div class="relative z-10">
+                    <p class="text-[10px] uppercase tracking-wider text-gray-400 font-semibold mb-1">SOLDE DISPONIBLE</p>
+                    <h2 id="current-balance" class="text-2xl font-extrabold text-white">0 FCFA</h2>
+                </div>
+            </div>
+
+            <!-- Carte Montant -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 space-y-3">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="font-bold text-gray-700 uppercase">Montant du dépôt</span>
+                    <span class="text-gray-400 text-[11px]">Min: 4 000 FCFA</span>
+                </div>
+
+                <div class="flex items-baseline border-b border-gray-100 pb-2">
+                    <input type="number" id="deposit-amount" placeholder="0" oninput="document.getElementById('footer-amount').textContent = (this.value || 0) + ' FCFA';" class="w-full text-3xl font-black text-gray-900 outline-none bg-transparent">
+                    <span class="font-bold text-gray-500 text-sm ml-2">FCFA</span>
+                </div>
+
+                <!-- Suggestions complètes -->
+                <div class="grid grid-cols-3 gap-2 pt-1">
+                    <button type="button" onclick="document.getElementById('deposit-amount').value=4000; document.getElementById('footer-amount').textContent='4 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">4 000 F</button>
+                    <button type="button" onclick="document.getElementById('deposit-amount').value=10000; document.getElementById('footer-amount').textContent='10 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">10 000 F</button>
+                    <button type="button" onclick="document.getElementById('deposit-amount').value=24000; document.getElementById('footer-amount').textContent='24 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">24 000 F</button>
+                    <button type="button" onclick="document.getElementById('deposit-amount').value=50000; document.getElementById('footer-amount').textContent='50 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">50 000 F</button>
+                    <button type="button" onclick="document.getElementById('deposit-amount').value=100000; document.getElementById('footer-amount').textContent='100 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">100 000 F</button>
+                    <button type="button" onclick="document.getElementById('deposit-amount').value=200000; document.getElementById('footer-amount').textContent='200 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">200 000 F</button>
+                </div>
+            </div>
+
+            <!-- Instructions (Caché au début) -->
+            <div id="payment-instructions" class="hidden bg-blue-50 border border-blue-200 rounded-2xl p-4 space-y-3">
+                <h3 class="text-sm font-bold text-blue-900">Comment faire votre dépôt ?</h3>
+                
+                <div class="space-y-2 text-xs text-blue-900">
+                    <p><strong>Étape 1 :</strong> Cliquez sur le bouton bleu "Copier" ci-dessous.</p>
+                    <div class="bg-white p-3 rounded-xl border border-blue-100 flex justify-between items-center">
+                        <span id="ussd-code" class="font-black text-blue-700 text-sm">*144*2*1*06461372*4000#</span>
+                        <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('ussd-code').textContent); alert('Code copié !');" class="text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg font-bold">Copier</button>
+                    </div>
+
+                    <p><strong>Étape 2 :</strong> Collez ce code dans votre téléphone et validez l'envoi. Le destinataire est : <strong>Florence Bamogo</strong>.</p>
+                    
+                    <p><strong>Étape 3 :</strong> Vous allez recevoir un SMS de confirmation. <strong>Cherchez l'ID de transaction</strong> dans ce SMS (c'est souvent une longue suite de chiffres/lettres, ex: <em>MP2405.123.A4567</em>).</p>
+                </div>
+                
+                <div class="pt-2">
+                    <label class="block text-[11px] font-bold text-blue-900 uppercase mb-1">Collez l'ID de transaction ici :</label>
+                    <input type="text" id="transaction-code" placeholder="Ex: MP2405.123.A4567" class="w-full bg-white border border-blue-200 rounded-xl px-3 py-3 text-xs font-bold text-gray-900 outline-none">
+                </div>
+
+                <button type="button" onclick="
+                    let code = document.getElementById('transaction-code').value.trim();
+                    let amount = Number(document.getElementById('deposit-amount').value);
+                    let u = JSON.parse(localStorage.getItem('rallyo_user'));
+
+                    if(!code || code.length < 4) { alert('Veuillez coller l\'ID de transaction reçu par SMS.'); return; }
+                    
+                    if(code === 'TEST') {
+                        u.balance = Number(u.balance || 0) + amount;
+                        localStorage.setItem('rallyo_user', JSON.stringify(u));
+                        alert('Dépôt de ' + amount.toLocaleString() + ' FCFA validé (Mode Test) !');
+                    } else {
+                        alert('Votre demande a été envoyée. Elle sera validée après confirmation de notre part.');
+                    }
+                    window.location.href = 'home.html';
+                " class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-xs uppercase transition mt-2">
+                    Valider mon dépôt
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Pied de page (Barre rouge) -->
+        <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-200 p-4 flex items-center justify-between z-50">
+            <div>
+                <span class="text-[10px] text-gray-400 block font-semibold">Vous payez</span>
+                <strong id="footer-amount" class="text-base font-black text-gray-900">0 FCFA</strong>
+            </div>
+            
+            <!-- Bouton Déposer direct -->
+            <button type="button" onclick="
+                let amount = Number(document.getElementById('deposit-amount').value);
+                if(!amount || amount < 4000) { alert('Le montant minimum de dépôt est de 4 000 FCFA.'); return; }
+                document.getElementById('ussd-code').textContent = '*144*2*1*06461372*' + amount + '#';
+                document.getElementById('payment-instructions').classList.remove('hidden');
+                document.getElementById('payment-instructions').scrollIntoView({ behavior: 'smooth' });
+            " id="btn-deposit" class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-8 py-3.5 rounded-xl shadow-lg shadow-red-600/30 transition">
+                Déposer
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // Affichage du solde au chargement
+        let user = JSON.parse(localStorage.getItem('rallyo_user'));
+        if (!user) window.location.href = 'index.html';
+        document.getElementById('current-balance').textContent = Number(user.balance || 0).toLocaleString() + " FCFA";
+        if (window.lucide) lucide.createIcons();
+    </script>
+</body>
+</html>

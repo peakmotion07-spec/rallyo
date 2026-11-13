@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rallyo - Lignes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans antialiased pb-24">
+
+    <div class="max-w-md mx-auto min-h-screen bg-gray-50 flex flex-col shadow-xl relative">
+        
+        <!-- En-tête -->
+        <div class="bg-white px-4 pt-4 pb-2 border-b border-gray-200 sticky top-0 z-40 flex items-center gap-3">
+            <img src="logo.png" alt="Rallyo" class="w-8 h-8 rounded-lg shadow-sm">
+            <h1 class="text-base font-bold text-gray-900">Lignes de production</h1>
+        </div>
+
+        <!-- Liste des 10 lignes -->
+        <div class="flex-1 px-4 py-4 space-y-6">
+            
+            <!-- LIGNE 1 -->
+            <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                <img src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80" class="w-full h-40 object-cover">
+                <div class="p-4 space-y-3">
+                    <h3 class="font-bold text-sm text-gray-900">Ligne Cuisine & Maison</h3>
+                    <div class="grid grid-cols-3 gap-2 py-2 border-y border-gray-100 text-xs text-center">
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Prix</span><strong class="font-black text-gray-900">4 000 F</strong></div>
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Gain/jour</span><strong class="font-bold text-green-600">1 000 F</strong></div>
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Durée</span><strong class="font-bold text-gray-900">100 j</strong></div>
+                    </div>
+                    <button type="button" onclick="
+                        let u = JSON.parse(localStorage.getItem('rallyo_user'));
+                        if(!u) { window.location.href='index.html'; return; }
+                        if(Number(u.balance) < 4000) { alert('Solde insuffisant ('+u.balance+' F). Faites un dépôt.'); window.location.href='recharge.html'; return; }
+                        u.balance = Number(u.balance) - 4000;
+                        localStorage.setItem('rallyo_user', JSON.stringify(u));
+                        if(window.syncInvestment) window.syncInvestment(4000, 'Ligne Cuisine & Maison');
+                        alert('Ligne Cuisine lancée ! Nouveau solde: ' + u.balance + ' F');
+                        window.location.href='home.html';
+                    " class="w-full bg-red-600 hover:bg-red-700 text-white font-bold text-xs py-3 rounded-xl shadow transition mt-2">
+                        Lancer pour 4 000 F
+                    </button>
+                </div>
+            </div>
+
+            <!-- LIGNE 2 -->
+            <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80" class="w-full h-40 object-cover">
+                <div class="p-4 space-y-3">
+                    <h3 class="font-bold text-sm text-gray-900">Ligne Électroménager</h3>
+                    <div class="grid grid-cols-3 gap-2 py-2 border-y border-gray-100 text-xs text-center">
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Prix</span><strong class="font-black text-gray-900">10 000 F</strong></div>
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Gain/jour</span><strong class="font-bold text-green-600">2 530 F</strong></div>
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Durée</span><strong class="font-bold text-gray-900">100 j</strong></div>
+                    </div>
+                    <button type="button" onclick="
+                        let u = JSON.parse(localStorage.getItem('rallyo_user'));
+                        if(!u) { window.location.href='index.html'; return; }
+                        if(Number(u.balance) < 10000) { alert('Solde insuffisant ('+u.balance+' F). Faites un dépôt.'); window.location.href='recharge.html'; return; }
+                        u.balance = Number(u.balance) - 10000;
+                        localStorage.setItem('rallyo_user', JSON.stringify(u));
+                        if(window.syncInvestment) window.syncInvestment(10000, 'Ligne Électroménager');
+                        alert('Ligne Électroménager lancée ! Nouveau solde: ' + u.balance + ' F');
+                        window.location.href='home.html';
+                    " class="w-full bg-red-600 hover:bg-red-700 text-white font-bold text-xs py-3 rounded-xl shadow transition mt-2">
+                        Lancer pour 10 000 F
+                    </button>
+                </div>
+            </div>
+
+            <!-- LIGNE 3 -->
+            <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80" class="w-full h-40 object-cover">
+                <div class="p-4 space-y-3">
+                    <h3 class="font-bold text-sm text-gray-900">Ligne Cœur de réseau</h3>
+                    <div class="grid grid-cols-3 gap-2 py-2 border-y border-gray-100 text-xs text-center">
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Prix</span><strong class="font-black text-gray-900">24 000 F</strong></div>
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Gain/jour</span><strong class="font-bold text-green-600">6 168 F</strong></div>
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Durée</span><strong class="font-bold text-gray-900">100 j</strong></div>
+                    </div>
+                    <button type="button" onclick="
+                        let u = JSON.parse(localStorage.getItem('rallyo_user'));
+                        if(!u) { window.location.href='index.html'; return; }
+                        if(Number(u.balance) < 24000) { alert('Solde insuffisant ('+u.balance+' F). Faites un dépôt.'); window.location.href='recharge.html'; return; }
+                        u.balance = Number(u.balance) - 24000;
+                        localStorage.setItem('rallyo_user', JSON.stringify(u));
+                        if(window.syncInvestment) window.syncInvestment(24000, 'Ligne Cœur de réseau');
+                        alert('Ligne Cœur de réseau lancée ! Nouveau solde: ' + u.balance + ' F');
+                        window.location.href='home.html';
+                    " class="w-full bg-red-600 hover:bg-red-700 text-white font-bold text-xs py-3 rounded-xl shadow transition mt-2">
+                        Lancer pour 24 000 F
+                    </button>
+                </div>
+            </div>
+
+            <!-- LIGNE 4 -->
+            <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80" class="w-full h-40 object-cover">
+                <div class="p-4 space-y-3">
+                    <h3 class="font-bold text-sm text-gray-900">Ligne Test électronique</h3>
+                    <div class="grid grid-cols-3 gap-2 py-2 border-y border-gray-100 text-xs text-center">
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Prix</span><strong class="font-black text-gray-900">50 000 F</strong></div>
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Gain/jour</span><strong class="font-bold text-green-600">13 100 F</strong></div>
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Durée</span><strong class="font-bold text-gray-900">100 j</strong></div>
+                    </div>
+                    <button type="button" onclick="
+                        let u = JSON.parse(localStorage.getItem('rallyo_user'));
+                        if(!u) { window.location.href='index.html'; return; }
+                        if(Number(u.balance) < 50000) { alert('Solde insuffisant ('+u.balance+' F). Faites un dépôt.'); window.location.href='recharge.html'; return; }
+                        u.balance = Number(u.balance) - 50000;
+                        localStorage.setItem('rallyo_user', JSON.stringify(u));
+                        if(window.syncInvestment) window.syncInvestment(50000, 'Ligne Test électronique');
+                        alert('Ligne Test électronique lancée ! Nouveau solde: ' + u.balance + ' F');
+                        window.location.href='home.html';
+                    " class="w-full bg-red-600 hover:bg-red-700 text-white font-bold text-xs py-3 rounded-xl shadow transition mt-2">
+                        Lancer pour 50 000 F
+                    </button>
+                </div>
+            </div>
+
+            <!-- LIGNE 5 -->
+            <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80" class="w-full h-40 object-cover">
+                <div class="p-4 space-y-3">
+                    <h3 class="font-bold text-sm text-gray-900">Ligne Automatisation d'usine</h3>
+                    <div class="grid grid-cols-3 gap-2 py-2 border-y border-gray-100 text-xs text-center">
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Prix</span><strong class="font-black text-gray-900">100 000 F</strong></div>
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Gain/jour</span><strong class="font-bold text-green-600">26 800 F</strong></div>
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Durée</span><strong class="font-bold text-gray-900">100 j</strong></div>
+                    </div>
+                    <button type="button" onclick="
+                        let u = JSON.parse(localStorage.getItem('rallyo_user'));
+                        if(!u) { window.location.href='index.html'; return; }
+                        if(Number(u.balance) < 100000) { alert('Solde insuffisant ('+u.balance+' F). Faites un dépôt.'); window.location.href='recharge.html'; return; }
+                        u.balance = Number(u.balance) - 100000;
+                        localStorage.setItem('rallyo_user', JSON.stringify(u));
+                        if(window.syncInvestment) window.syncInvestment(100000, 'Ligne Automatisation');
+                        alert('Ligne Automatisation lancée ! Nouveau solde: ' + u.balance + ' F');
+                        window.location.href='home.html';
+                    " class="w-full bg-red-600 hover:bg-red-700 text-white font-bold text-xs py-3 rounded-xl shadow transition mt-2">
+                        Lancer pour 100 000 F
+                    </button>
+                </div>
+            </div>
+
+            <!-- LIGNE 6 -->
+            <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                <img src="https://images.unsplash.com/photo-1563770660941-20978e870e26?auto=format&fit=crop&w=800&q=80" class="w-full h-40 object-cover">
+                <div class="p-4 space-y-3">
+                    <h3 class="font-bold text-sm text-gray-900">Cellule de soudage robotisée</h3>
+                    <div class="grid grid-cols-3 gap-2 py-2 border-y border-gray-100 text-xs text-center">
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Prix</span><strong class="font-black text-gray-900">200 000 F</strong></div>
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Gain/jour</span><strong class="font-bold text-green-600">55 000 F</strong></div>
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Durée</span><strong class="font-bold text-gray-900">100 j</strong></div>
+                    </div>
+                    <button type="button" onclick="
+                        let u = JSON.parse(localStorage.getItem('rallyo_user'));
+                        if(!u) { window.location.href='index.html'; return; }
+                        if(Number(u.balance) < 200000) { alert('Solde insuffisant ('+u.balance+' F). Faites un dépôt.'); window.location.href='recharge.html'; return; }
+                        u.balance = Number(u.balance) - 200000;
+                        localStorage.setItem('rallyo_user', JSON.stringify(u));
+                        if(window.syncInvestment) window.syncInvestment(200000, 'Cellule de soudage');
+                        alert('Cellule de soudage lancée ! Nouveau solde: ' + u.balance + ' F');
+                        window.location.href='home.html';
+                    " class="w-full bg-red-600 hover:bg-red-700 text-white font-bold text-xs py-3 rounded-xl shadow transition mt-2">
+                        Lancer pour 200 000 F
+                    </button>
+                </div>
+            </div>
+
+            <!-- LIGNE 7 -->
+            <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                <img src="https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&w=800&q=80" class="w-full h-40 object-cover">
+                <div class="p-4 space-y-3">
+                    <h3 class="font-bold text-sm text-gray-900">Ligne Panneaux solaires</h3>
+                    <div class="grid grid-cols-3 gap-2 py-2 border-y border-gray-100 text-xs text-center">
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Prix</span><strong class="font-black text-gray-900">400 000 F</strong></div>
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Gain/jour</span><strong class="font-bold text-green-600">113 200 F</strong></div>
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Durée</span><strong class="font-bold text-gray-900">100 j</strong></div>
+                    </div>
+                    <button type="button" onclick="
+                        let u = JSON.parse(localStorage.getItem('rallyo_user'));
+                        if(!u) { window.location.href='index.html'; return; }
+                        if(Number(u.balance) < 400000) { alert('Solde insuffisant ('+u.balance+' F). Faites un dépôt.'); window.location.href='recharge.html'; return; }
+                        u.balance = Number(u.balance) - 400000;
+                        localStorage.setItem('rallyo_user', JSON.stringify(u));
+                        if(window.syncInvestment) window.syncInvestment(400000, 'Ligne Panneaux solaires');
+                        alert('Ligne Panneaux solaires lancée ! Nouveau solde: ' + u.balance + ' F');
+                        window.location.href='home.html';
+                    " class="w-full bg-red-600 hover:bg-red-700 text-white font-bold text-xs py-3 rounded-xl shadow transition mt-2">
+                        Lancer pour 400 000 F
+                    </button>
+                </div>
+            </div>
+
+            <!-- LIGNE 8 -->
+            <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=800&q=80" class="w-full h-40 object-cover">
+                <div class="p-4 space-y-3">
+                    <h3 class="font-bold text-sm text-gray-900">Ligne Transformateurs réseau</h3>
+                    <div class="grid grid-cols-3 gap-2 py-2 border-y border-gray-100 text-xs text-center">
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Prix</span><strong class="font-black text-gray-900">700 000 F</strong></div>
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Gain/jour</span><strong class="font-bold text-green-600">204 400 F</strong></div>
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Durée</span><strong class="font-bold text-gray-900">100 j</strong></div>
+                    </div>
+                    <button type="button" onclick="
+                        let u = JSON.parse(localStorage.getItem('rallyo_user'));
+                        if(!u) { window.location.href='index.html'; return; }
+                        if(Number(u.balance) < 700000) { alert('Solde insuffisant ('+u.balance+' F). Faites un dépôt.'); window.location.href='recharge.html'; return; }
+                        u.balance = Number(u.balance) - 700000;
+                        localStorage.setItem('rallyo_user', JSON.stringify(u));
+                        if(window.syncInvestment) window.syncInvestment(700000, 'Ligne Transformateurs');
+                        alert('Ligne Transformateurs lancée ! Nouveau solde: ' + u.balance + ' F');
+                        window.location.href='home.html';
+                    " class="w-full bg-red-600 hover:bg-red-700 text-white font-bold text-xs py-3 rounded-xl shadow transition mt-2">
+                        Lancer pour 700 000 F
+                    </button>
+                </div>
+            </div>
+
+            <!-- LIGNE 9 -->
+            <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=800&q=80" class="w-full h-40 object-cover">
+                <div class="p-4 space-y-3">
+                    <h3 class="font-bold text-sm text-gray-900">Ligne Recharge véhicules</h3>
+                    <div class="grid grid-cols-3 gap-2 py-2 border-y border-gray-100 text-xs text-center">
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Prix</span><strong class="font-black text-gray-900">1 100 000 F</strong></div>
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Gain/jour</span><strong class="font-bold text-green-600">332 200 F</strong></div>
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Durée</span><strong class="font-bold text-gray-900">100 j</strong></div>
+                    </div>
+                    <button type="button" onclick="
+                        let u = JSON.parse(localStorage.getItem('rallyo_user'));
+                        if(!u) { window.location.href='index.html'; return; }
+                        if(Number(u.balance) < 1100000) { alert('Solde insuffisant ('+u.balance+' F). Faites un dépôt.'); window.location.href='recharge.html'; return; }
+                        u.balance = Number(u.balance) - 1100000;
+                        localStorage.setItem('rallyo_user', JSON.stringify(u));
+                        if(window.syncInvestment) window.syncInvestment(1100000, 'Ligne Recharge véhicules');
+                        alert('Ligne Recharge véhicules lancée ! Nouveau solde: ' + u.balance + ' F');
+                        window.location.href='home.html';
+                    " class="w-full bg-red-600 hover:bg-red-700 text-white font-bold text-xs py-3 rounded-xl shadow transition mt-2">
+                        Lancer pour 1 100 000 F
+                    </button>
+                </div>
+            </div>
+
+            <!-- LIGNE 10 -->
+            <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80" class="w-full h-40 object-cover">
+                <div class="p-4 space-y-3">
+                    <h3 class="font-bold text-sm text-gray-900">Ligne Assemblage de carrosserie</h3>
+                    <div class="grid grid-cols-3 gap-2 py-2 border-y border-gray-100 text-xs text-center">
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Prix</span><strong class="font-black text-gray-900">1 500 000 F</strong></div>
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Gain/jour</span><strong class="font-bold text-green-600">469 500 F</strong></div>
+                        <div><span class="block text-[10px] text-gray-400 font-semibold">Durée</span><strong class="font-bold text-gray-900">100 j</strong></div>
+                    </div>
+                    <button type="button" onclick="
+                        let u = JSON.parse(localStorage.getItem('rallyo_user'));
+                        if(!u) { window.location.href='index.html'; return; }
+                        if(Number(u.balance) < 1500000) { alert('Solde insuffisant ('+u.balance+' F). Faites un dépôt.'); window.location.href='recharge.html'; return; }
+                        u.balance = Number(u.balance) - 1500000;
+                        localStorage.setItem('rallyo_user', JSON.stringify(u));
+                        if(window.syncInvestment) window.syncInvestment(1500000, 'Ligne Assemblage');
+                        alert('Ligne Assemblage lancée ! Nouveau solde: ' + u.balance + ' F');
+                        window.location.href='home.html';
+                    " class="w-full bg-red-600 hover:bg-red-700 text-white font-bold text-xs py-3 rounded-xl shadow transition mt-2">
+                        Lancer pour 1 500 000 F
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Barre de navigation (SANS ICÔNES POUR ÉVITER LES BUGS) -->
+        <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-200 py-3 px-6 flex justify-between items-center z-50">
+            <a href="home.html" class="flex flex-col items-center text-gray-400">
+                <span class="text-[11px] font-bold">Accueil</span>
+            </a>
+            <a href="lines.html" class="flex flex-col items-center text-red-600">
+                <span class="text-[11px] font-bold">Lignes</span>
+            </a>
+            <a href="team.html" class="flex flex-col items-center text-gray-400">
+                <span class="text-[11px] font-bold">Équipe</span>
+            </a>
+            <a href="profile.html" class="flex flex-col items-center text-gray-400">
+                <span class="text-[11px] font-bold">Profil</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let supabase = null;
+        try {
+            supabase = window.supabase.createClient('https://afkungjbyjxibnkkflab.supabase.co', 'sb_publishable_YI20-tV_eeIysnLJtnoQkA_GcF3VR74');
+        } catch(e) {}
+
+        window.syncInvestment = async function(price, planName) {
+            if(!supabase) return;
+            try {
+                const u = JSON.parse(localStorage.getItem('rallyo_user'));
+                if(!u) return;
+                await supabase.from('profiles').update({ balance: u.balance }).eq('id', u.id);
+                const expires = new Date();
+                expires.setDate(expires.getDate() + 100);
+                await supabase.from('investments').insert([{
+                    user_id: u.id, plan_title: planName, amount: price, daily_income: price / 4, expires_at: expires.toISOString()
+                }]);
+            } catch(e) {}
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rallyo - Retrait</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans antialiased pb-24">
+
+    <div class="max-w-md mx-auto min-h-screen bg-gray-50 flex flex-col shadow-xl relative">
+        
+        <!-- En-tête -->
+        <div class="bg-white px-4 pt-5 pb-4 border-b border-gray-200 flex justify-between items-center sticky top-0 z-40">
+            <div class="flex items-center gap-3">
+                <a href="home.html" class="text-gray-800"><i data-lucide="chevron-left" class="w-6 h-6"></i></a>
+                <h1 class="text-base font-bold text-gray-900">Retrait</h1>
+            </div>
+            <a href="withdraw-history.html" class="text-xs font-bold text-blue-600">Historique</a>
+        </div>
+
+        <!-- Corps -->
+        <div class="flex-1 px-4 py-4 space-y-4">
+            
+            <!-- Solde Disponible -->
+            <div class="bg-slate-900 text-white p-5 rounded-2xl relative overflow-hidden shadow-md">
+                <div class="relative z-10">
+                    <p class="text-[10px] uppercase tracking-wider text-gray-400 font-semibold mb-1">SOLDE DISPONIBLE</p>
+                    <h2 id="current-balance" class="text-2xl font-extrabold text-white">0 FCFA</h2>
+                </div>
+            </div>
+
+            <!-- Conditions de retrait -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 space-y-3">
+                <h3 class="font-bold text-sm text-gray-900 flex items-center gap-2">
+                    <i data-lucide="info" class="w-4 h-4 text-red-600"></i>
+                    <span>Conditions de retrait</span>
+                </h3>
+                <div class="space-y-2 text-xs">
+                    <div class="flex items-center gap-2" id="cond-search">
+                        <i data-lucide="circle" class="w-4 h-4 text-gray-300"></i>
+                        <span class="text-gray-500">Effectuer une recherche</span>
+                    </div>
+                    <div class="flex items-center gap-2" id="cond-line">
+                        <i data-lucide="circle" class="w-4 h-4 text-gray-300"></i>
+                        <span class="text-gray-500">Lancer une ligne</span>
+                    </div>
+                    <div class="flex items-center gap-2" id="cond-ref">
+                        <i data-lucide="circle" class="w-4 h-4 text-gray-300"></i>
+                        <span class="text-gray-500">Parrainer quelqu'un</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Compte de retrait lié -->
+            <div id="bound-account-card" class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center justify-between">
+                <!-- Rempli dynamiquement par le script -->
+            </div>
+
+            <!-- Formulaire de montant -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 space-y-3">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="font-bold text-gray-700 uppercase">Montant du retrait</span>
+                    <span class="text-gray-400 text-[11px]">Frais : <strong class="text-red-600">18%</strong></span>
+                </div>
+
+                <div class="flex items-baseline border-b border-gray-100 pb-2">
+                    <input type="number" id="withdraw-amount" placeholder="0" class="w-full text-3xl font-black text-gray-900 outline-none bg-transparent">
+                    <span class="font-bold text-gray-500 text-sm ml-2">FCFA</span>
+                </div>
+
+                <div class="pt-2 space-y-1 text-xs text-gray-500">
+                    <div class="flex justify-between">
+                        <span>Frais (18%) :</span>
+                        <strong id="fee-display" class="text-gray-900">0 FCFA</strong>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Montant net à recevoir :</span>
+                        <strong id="net-display" class="text-green-600 font-bold">0 FCFA</strong>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="processWithdraw()" id="withdraw-btn" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider shadow-lg shadow-red-600/30 transition">
+                Confirmer le retrait
+            </button>
+
+        </div>
+
+        <!-- Barre de navigation inférieure -->
+        <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-200 py-2 px-6 flex justify-between items-center z-50">
+            <a href="home.html" class="flex flex-col items-center text-gray-400 hover:text-gray-600"><i data-lucide="home" class="w-5 h-5"></i><span class="text-[10px] font-semibold mt-1">Accueil</span></a>
+            <a href="lines.html" class="flex flex-col items-center text-gray-400 hover:text-gray-600"><i data-lucide="layers" class="w-5 h-5"></i><span class="text-[10px] font-semibold mt-1">Lignes</span></a>
+            <a href="team.html" class="flex flex-col items-center text-gray-400 hover:text-gray-600"><i data-lucide="users" class="w-5 h-5"></i><span class="text-[10px] font-semibold mt-1">Équipe</span></a>
+            <a href="profile.html" class="flex flex-col items-center text-gray-400 hover:text-gray-600"><i data-lucide="user" class="w-5 h-5"></i><span class="text-[10px] font-semibold mt-1">Profil</span></a>
+        </div>
+
+    </div>
+
+    <script>
+        const supabase = window.supabase.createClient('https://afkungjbyjxibnkkflab.supabase.co', 'sb_publishable_YI20-tV_eeIysnLJtnoQkA_GcF3VR74');
+        const user = JSON.parse(localStorage.getItem('rallyo_user'));
+        
+        if (!user) window.location.href = 'index.html';
+        if (window.lucide) lucide.createIcons();
+
+        document.getElementById('current-balance').textContent = `${Number(user.balance || 0).toLocaleString()} FCFA`;
+
+        // --- GESTION DES CONDITIONS ---
+        let conditionsMet = { search: false, line: false, ref: false };
+
+        async function checkWithdrawConditions() {
+            try {
+                // 1. Vérifier s'il a une ligne (Recherche / Ligne)
+                const { data: investments } = await supabase.from('investments').select('id').eq('user_id', user.id).limit(1);
+                if (investments && investments.length > 0) {
+                    conditionsMet.search = true;
+                    conditionsMet.line = true;
+                }
+
+                // 2. Vérifier s'il a un filleul (Parrainage)
+                const { data: referrals } = await supabase.from('profiles').select('id').eq('referred_by', user.id).limit(1);
+                if (referrals && referrals.length > 0) {
+                    conditionsMet.ref = true;
+                }
+
+                // Mettre à jour l'affichage
+                updateConditionUI('cond-search', conditionsMet.search);
+                updateConditionUI('cond-line', conditionsMet.line);
+                updateConditionUI('cond-ref', conditionsMet.ref);
+            } catch(e) {
+                console.log("Erreur de vérification des conditions", e);
+            }
+        }
+
+        function updateConditionUI(id, isValid) {
+            const el = document.getElementById(id);
+            if (isValid) {
+                el.querySelector('i').setAttribute('data-lucide', 'check-circle');
+                el.querySelector('i').className = "w-4 h-4 text-green-600";
+                el.querySelector('span').className = "text-gray-900 font-medium line-through decoration-green-500";
+            }
+        }
+
+        // Lancer la vérification au chargement
+        checkWithdrawConditions().then(() => {
+            if(window.lucide) lucide.createIcons();
+        });
+
+        // --- GESTION DU COMPTE LIÉ ---
+        const boundCard = document.getElementById('bound-account-card');
+        if (!user.bank_account || !user.bank_account.linked) {
+            boundCard.innerHTML = `
+                <div class="flex items-center gap-3 text-amber-600">
+                    <i data-lucide="alert-circle" class="w-5 h-5"></i>
+                    <span class="text-xs font-bold">Aucun compte lié</span>
+                </div>
+                <a href="bank-account.html" class="bg-red-600 text-white text-xs font-bold px-3 py-2 rounded-xl">Lier</a>
+            `;
+        } else {
+            boundCard.innerHTML = `
+                <div>
+                    <span class="text-[10px] font-bold text-gray-400 uppercase">Compte de retrait</span>
+                    <h4 class="font-bold text-sm text-gray-900 mt-0.5">${user.bank_account.operator} (${user.bank_account.number})</h4>
+                </div>
+                <a href="bank-account.html" class="text-xs font-bold text-blue-600">Modifier</a>
+            `;
+        }
+
+        // --- CALCUL DES FRAIS ---
+        const amountInput = document.getElementById('withdraw-amount');
+        const feeDisplay = document.getElementById('fee-display');
+        const netDisplay = document.getElementById('net-display');
+
+        amountInput.addEventListener('input', (e) => {
+            const val = Number(e.target.value || 0);
+            const fee = val * 0.18;
+            const net = val - fee;
+            feeDisplay.textContent = `${fee.toLocaleString()} FCFA`;
+            netDisplay.textContent = `${net.toLocaleString()} FCFA`;
+        });
+
+        // --- SOUMISSION DU RETRAIT ---
+        window.processWithdraw = async function() {
+            if (!conditionsMet.search || !conditionsMet.line || !conditionsMet.ref) {
+                alert("Vous devez remplir toutes les conditions de retrait avant de continuer.");
+                return;
+            }
+
+            if (!user.bank_account || !user.bank_account.linked) {
+                alert("Veuillez d'abord lier un compte de retrait !");
+                window.location.href = 'bank-account.html';
+                return;
+            }
+
+            const amount = Number(amountInput.value);
+            if (!amount || amount < 1200) {
+                alert("Le montant minimum de retrait est de 1 200 FCFA.");
+                return;
+            }
+
+            const balance = Number(user.balance || 0);
+            if (amount > balance) {
+                alert("Solde insuffisant pour effectuer ce retrait.");
+                return;
+            }
+
+            // Enregistrement de la demande
+            const { error } = await supabase.from('transactions').insert([{
+                user_id: user.id,
+                type: 'withdraw',
+                amount: amount,
+                status: 'pending',
+                operator: user.bank_account.operator,
+                account_number: user.bank_account.number
+            }]);
+
+            if (error) {
+                alert("Erreur lors de la demande de retrait.");
+                return;
+            }
+
+            // Déduction du solde
+            user.balance = balance - amount;
+            localStorage.setItem('rallyo_user', JSON.stringify(user));
+            await supabase.from('profiles').update({ balance: user.balance }).eq('id', user.id);
+
+            alert(`Demande de retrait de ${amount.toLocaleString()} FCFA envoyée ! Vous recevrez l'argent sur ${user.bank_account.number}.`);
+            window.location.href = 'home.html';
+        }
+    </script>
+</body>
+</html>

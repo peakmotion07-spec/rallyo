@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rallyo - Historique des fonds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans antialiased pb-24">
+
+    <div class="max-w-md mx-auto min-h-screen bg-gray-50 flex flex-col shadow-xl relative">
+        
+        <div class="bg-white px-4 pt-5 pb-4 border-b border-gray-200 flex items-center gap-3 sticky top-0 z-40">
+            <a href="profile.html" class="text-gray-800"><i data-lucide="chevron-left" class="w-6 h-6"></i></a>
+            <h1 class="text-base font-bold text-gray-900">Historique des fonds</h1>
+        </div>
+
+        <div class="flex-1 px-4 py-4 space-y-3" id="history-container">
+            <div class="text-center py-10 text-gray-400 text-sm animate-pulse">Chargement...</div>
+        </div>
+
+        <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-200 py-2 px-6 flex justify-between items-center z-50">
+            <a href="home.html" class="flex flex-col items-center text-gray-400 hover:text-gray-600"><i data-lucide="home" class="w-5 h-5"></i><span class="text-[10px] font-semibold mt-1">Accueil</span></a>
+            <a href="lines.html" class="flex flex-col items-center text-gray-400 hover:text-gray-600"><i data-lucide="layers" class="w-5 h-5"></i><span class="text-[10px] font-semibold mt-1">Lignes</span></a>
+            <a href="team.html" class="flex flex-col items-center text-gray-400 hover:text-gray-600"><i data-lucide="users" class="w-5 h-5"></i><span class="text-[10px] font-semibold mt-1">Équipe</span></a>
+            <a href="profile.html" class="flex flex-col items-center text-gray-400 hover:text-gray-600"><i data-lucide="user" class="w-5 h-5"></i><span class="text-[10px] font-semibold mt-1">Profil</span></a>
+        </div>
+    </div>
+
+    <script>
+        const supabase = window.supabase.createClient('https://afkungjbyjxibnkkflab.supabase.co', 'sb_publishable_YI20-tV_eeIysnLJtnoQkA_GcF3VR74');
+        const user = JSON.parse(localStorage.getItem('rallyo_user'));
+        
+        if (!user) window.location.href = 'index.html';
+        if (window.lucide) lucide.createIcons();
+
+        async function loadHistory() {
+            const { data, error } = await supabase
+                .from('investments')
+                .select('*')
+                .eq('user_id', user.id)
+                .order('started_at', { ascending: false });
+
+            const container = document.getElementById('history-container');
+
+            if (error || !data || data.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 flex flex-col items-center">
+                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center text-gray-400 mb-3">
+                            <i data-lucide="inbox" class="w-8 h-8"></i>
+                        </div>
+                        <p class="text-sm text-gray-500 font-medium">Aucune ligne achetée pour le moment.</p>
+                        <a href="lines.html" class="mt-4 bg-red-600 text-white text-xs font-bold px-5 py-2.5 rounded-xl">Voir les lignes</a>
+                    </div>
+                `;
+                if (window.lucide) lucide.createIcons();
+                return;
+            }
+
+            container.innerHTML = data.map(inv => {
+                const date = new Date(inv.started_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+                const isActive = inv.status === 'active';
+                const statusBadge = isActive 
+                    ? '<span class="text-[10px] font-bold bg-green-100 text-green-700 px-2 py-1 rounded-md">Active</span>'
+                    : '<span class="text-[10px] font-bold bg-gray-200 text-gray-600 px-2 py-1 rounded-md">Terminée</span>';
+
+                return `
+                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center">
+                                    <i data-lucide="layers" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-sm text-gray-900">${inv.plan_title}</h4>
+                                    <p class="text-[10px] text-gray-500 mt-0.5">Achetée le ${date}</p>
+                                </div>
+                            </div>
+                            ${statusBadge}
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-gray-100 text-center">
+                            <div>
+                                <span class="block text-[9px] text-gray-400 font-bold uppercase">Investi</span>
+                                <strong class="text-xs text-gray-900">${Number(inv.amount).toLocaleString()} FCFA</strong>
+                            </div>
+                            <div>
+                                <span class="block text-[9px] text-gray-400 font-bold uppercase">Revenu/jour</span>
+                                <strong class="text-xs text-green-600">${Number(inv.daily_income).toLocaleString()} FCFA</strong>
+                            </div>
+                            <div>
+                                <span class="block text-[9px] text-gray-400 font-bold uppercase">Durée</span>
+                                <strong class="text-xs text-gray-900">${inv.duration_days || 100} j</strong>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            if (window.lucide) lucide.createIcons();
+        }
+        loadHistory();
+    </script>
+</body>
+</html>
