@@ -259,3 +259,41 @@
                         if(!u) { window.location.href='index.html'; return; }
                         if(Number(u.balance) < 1500000) { alert('Solde insuffisant ('+u.balance+' F). Faites un dépôt.'); window.location.href='recharge.html'; return; }
                         u.balance = Number(u.balance) - 1500000;
+                        localStorage.setItem('rallyo_user', JSON.stringify(u));
+                        if(window.syncInvestment) window.syncInvestment(1500000, 'Ligne Assemblage');
+                        alert('Ligne Assemblage lancée ! Nouveau solde: ' + u.balance + ' F');
+                        window.location.href='home.html';
+                    " class="w-full bg-red-600 hover:bg-red-700 text-white font-bold text-xs py-3 rounded-xl shadow transition mt-2">
+                        Lancer pour 1 500 000 F
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-200 py-3 px-6 flex justify-between items-center z-50">
+            <a href="home.html" class="flex flex-col items-center text-gray-400"><span class="text-[11px] font-bold">Accueil</span></a>
+            <a href="lines.html" class="flex flex-col items-center text-red-600"><span class="text-[11px] font-bold">Lignes</span></a>
+            <a href="team.html" class="flex flex-col items-center text-gray-400"><span class="text-[11px] font-bold">Équipe</span></a>
+            <a href="profile.html" class="flex flex-col items-center text-gray-400"><span class="text-[11px] font-bold">Profil</span></a>
+        </div>
+    </div>
+
+    <script>
+        let supabase = null;
+        try { supabase = window.supabase.createClient('https://afkungjbyjxibnkkflab.supabase.co', 'sb_publishable_YI20-tV_eeIysnLJtnoQkA_GcF3VR74'); } catch(e) {}
+
+        window.syncInvestment = async function(price, planName) {
+            if(!supabase) return;
+            try {
+                const u = JSON.parse(localStorage.getItem('rallyo_user'));
+                if(!u) return;
+                await supabase.from('profiles').update({ balance: u.balance }).eq('id', u.id);
+                const expires = new Date();
+                expires.setDate(expires.getDate() + 100);
+                await supabase.from('investments').insert([{ user_id: u.id, plan_title: planName, amount: price, daily_income: price / 4, expires_at: expires.toISOString() }]);
+            } catch(e) {}
+        };
+    </script>
+</body>
+</html>
