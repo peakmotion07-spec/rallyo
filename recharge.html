@@ -11,7 +11,6 @@
 
     <div class="max-w-md mx-auto min-h-screen bg-gray-50 flex flex-col shadow-xl relative">
         
-        <!-- En-tête -->
         <div class="bg-white px-4 pt-5 pb-4 border-b border-gray-200 flex justify-between items-center sticky top-0 z-40">
             <div class="flex items-center gap-3">
                 <a href="home.html" class="text-gray-800"><i data-lucide="chevron-left" class="w-6 h-6"></i></a>
@@ -20,10 +19,8 @@
             <a href="deposit-history.html" class="text-xs font-bold text-blue-600">Historique</a>
         </div>
 
-        <!-- Corps -->
         <div class="flex-1 px-4 py-4 space-y-4">
             
-            <!-- Solde Actuel -->
             <div class="bg-slate-900 text-white p-5 rounded-2xl relative overflow-hidden shadow-md">
                 <div class="relative z-10">
                     <p class="text-[10px] uppercase tracking-wider text-gray-400 font-semibold mb-1">SOLDE DISPONIBLE</p>
@@ -31,11 +28,10 @@
                 </div>
             </div>
 
-            <!-- Carte Montant -->
             <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 space-y-3">
                 <div class="flex justify-between items-center text-xs">
                     <span class="font-bold text-gray-700 uppercase">Montant du dépôt</span>
-                    <span class="text-gray-400 text-[11px]">Min: 4 000 FCFA</span>
+                    <span class="text-gray-400 text-[11px]">Min: 3 000 FCFA</span>
                 </div>
 
                 <div class="flex items-baseline border-b border-gray-100 pb-2">
@@ -43,10 +39,9 @@
                     <span class="font-bold text-gray-500 text-sm ml-2">FCFA</span>
                 </div>
 
-                <!-- Suggestions complètes -->
                 <div class="grid grid-cols-3 gap-2 pt-1">
-                    <button type="button" onclick="document.getElementById('deposit-amount').value=4000; document.getElementById('footer-amount').textContent='4 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">4 000 F</button>
-                    <button type="button" onclick="document.getElementById('deposit-amount').value=10000; document.getElementById('footer-amount').textContent='10 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">10 000 F</button>
+                    <button type="button" onclick="document.getElementById('deposit-amount').value=3000; document.getElementById('footer-amount').textContent='3 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">3 000 F</button>
+                    <button type="button" onclick="document.getElementById('deposit-amount').value=7000; document.getElementById('footer-amount').textContent='7 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">7 000 F</button>
                     <button type="button" onclick="document.getElementById('deposit-amount').value=24000; document.getElementById('footer-amount').textContent='24 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">24 000 F</button>
                     <button type="button" onclick="document.getElementById('deposit-amount').value=50000; document.getElementById('footer-amount').textContent='50 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">50 000 F</button>
                     <button type="button" onclick="document.getElementById('deposit-amount').value=100000; document.getElementById('footer-amount').textContent='100 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">100 000 F</button>
@@ -54,14 +49,13 @@
                 </div>
             </div>
 
-            <!-- Instructions (Caché au début) -->
             <div id="payment-instructions" class="hidden bg-blue-50 border border-blue-200 rounded-2xl p-4 space-y-3">
                 <h3 class="text-sm font-bold text-blue-900">Comment faire votre dépôt ?</h3>
                 
                 <div class="space-y-2 text-xs text-blue-900">
                     <p><strong>Étape 1 :</strong> Cliquez sur le bouton bleu "Copier" ci-dessous.</p>
                     <div class="bg-white p-3 rounded-xl border border-blue-100 flex justify-between items-center">
-                        <span id="ussd-code" class="font-black text-blue-700 text-sm">*144*2*1*06461372*4000#</span>
+                        <span id="ussd-code" class="font-black text-blue-700 text-sm">*144*2*1*06461372*3000#</span>
                         <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('ussd-code').textContent); alert('Code copié !');" class="text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg font-bold">Copier</button>
                     </div>
 
@@ -97,17 +91,15 @@
 
         </div>
 
-        <!-- Pied de page (Barre rouge) -->
         <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-200 p-4 flex items-center justify-between z-50">
             <div>
                 <span class="text-[10px] text-gray-400 block font-semibold">Vous payez</span>
                 <strong id="footer-amount" class="text-base font-black text-gray-900">0 FCFA</strong>
             </div>
             
-            <!-- Bouton Déposer direct -->
             <button type="button" onclick="
                 let amount = Number(document.getElementById('deposit-amount').value);
-                if(!amount || amount < 4000) { alert('Le montant minimum de dépôt est de 4 000 FCFA.'); return; }
+                if(!amount || amount < 3000) { alert('Le montant minimum de dépôt est de 3 000 FCFA.'); return; }
                 document.getElementById('ussd-code').textContent = '*144*2*1*06461372*' + amount + '#';
                 document.getElementById('payment-instructions').classList.remove('hidden');
                 document.getElementById('payment-instructions').scrollIntoView({ behavior: 'smooth' });
@@ -119,7 +111,6 @@
     </div>
 
     <script>
-        // Affichage du solde au chargement
         let user = JSON.parse(localStorage.getItem('rallyo_user'));
         if (!user) window.location.href = 'index.html';
         document.getElementById('current-balance').textContent = Number(user.balance || 0).toLocaleString() + " FCFA";
