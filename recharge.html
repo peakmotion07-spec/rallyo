@@ -6,6 +6,7 @@
     <title>Rallyo - Dépôt</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans antialiased pb-32">
 
@@ -43,9 +44,6 @@
                     <button type="button" onclick="document.getElementById('deposit-amount').value=3000; document.getElementById('footer-amount').textContent='3 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">3 000 F</button>
                     <button type="button" onclick="document.getElementById('deposit-amount').value=7000; document.getElementById('footer-amount').textContent='7 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">7 000 F</button>
                     <button type="button" onclick="document.getElementById('deposit-amount').value=24000; document.getElementById('footer-amount').textContent='24 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">24 000 F</button>
-                    <button type="button" onclick="document.getElementById('deposit-amount').value=50000; document.getElementById('footer-amount').textContent='50 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">50 000 F</button>
-                    <button type="button" onclick="document.getElementById('deposit-amount').value=100000; document.getElementById('footer-amount').textContent='100 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">100 000 F</button>
-                    <button type="button" onclick="document.getElementById('deposit-amount').value=200000; document.getElementById('footer-amount').textContent='200 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">200 000 F</button>
                 </div>
             </div>
 
@@ -61,7 +59,7 @@
 
                     <p><strong>Étape 2 :</strong> Collez ce code dans votre téléphone et validez l'envoi. Le destinataire est : <strong>Florence Bamogo</strong>.</p>
                     
-                    <p><strong>Étape 3 :</strong> Vous allez recevoir un SMS de confirmation. <strong>Cherchez l'ID de transaction</strong> dans ce SMS (c'est souvent une longue suite de chiffres/lettres, ex: <em>MP2405.123.A4567</em>).</p>
+                    <p><strong>Étape 3 :</strong> Vous allez recevoir un SMS de confirmation. <strong>Cherchez l'ID de transaction</strong> dans ce SMS.</p>
                 </div>
                 
                 <div class="pt-2">
@@ -80,10 +78,21 @@
                         u.balance = Number(u.balance || 0) + amount;
                         localStorage.setItem('rallyo_user', JSON.stringify(u));
                         alert('Dépôt de ' + amount.toLocaleString() + ' FCFA validé (Mode Test) !');
+                        window.location.href = 'home.html';
                     } else {
-                        alert('Votre demande a été envoyée. Elle sera validée après confirmation de notre part.');
+                        // --- ENVOI VERS SUPABASE ---
+                        const supabase = window.supabase.createClient('https://afkungjbyjxibnkkflab.supabase.co', 'sb_publishable_YI20-tV_eeIysnLJtnoQkA_GcF3VR74');
+                        supabase.from('transactions').insert([{
+                            user_id: u.id,
+                            type: 'deposit',
+                            amount: amount,
+                            status: 'pending',
+                            transaction_code: code
+                        }]).then(({ error }) => {
+                            if(error) { alert('Erreur lors de l\'envoi de la demande.'); console.log(error); }
+                            else { alert('Votre demande a été envoyée. Elle sera validée après confirmation.'); window.location.href = 'home.html'; }
+                        });
                     }
-                    window.location.href = 'home.html';
                 " class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-xs uppercase transition mt-2">
                     Valider mon dépôt
                 </button>
