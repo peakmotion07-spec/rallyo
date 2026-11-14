@@ -40,7 +40,6 @@
                     <span class="font-bold text-gray-500 text-sm ml-2">FCFA</span>
                 </div>
 
-                <!-- Les 6 suggestions de montants -->
                 <div class="grid grid-cols-3 gap-2 pt-1">
                     <button type="button" onclick="document.getElementById('deposit-amount').value=3000; document.getElementById('footer-amount').textContent='3 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">3 000 F</button>
                     <button type="button" onclick="document.getElementById('deposit-amount').value=7000; document.getElementById('footer-amount').textContent='7 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">7 000 F</button>
@@ -78,25 +77,26 @@
 
                     if(!code || code.length < 4) { alert('Veuillez coller l\'ID de transaction reçu par SMS.'); return; }
                     
-                    if(code === 'TEST') {
-                        u.balance = Number(u.balance || 0) + amount;
-                        localStorage.setItem('rallyo_user', JSON.stringify(u));
-                        alert('Dépôt de ' + amount.toLocaleString() + ' FCFA validé (Mode Test) !');
-                        window.location.href = 'home.html';
-                    } else {
-                        // Envoi réel vers Supabase
-                        const supabase = window.supabase.createClient('https://afkungjbyjxibnkkflab.supabase.co', 'sb_publishable_YI20-tV_eeIysnLJtnoQkA_GcF3VR74');
-                        supabase.from('transactions').insert([{
-                            user_id: u.id,
-                            type: 'deposit',
-                            amount: amount,
-                            status: 'pending',
-                            transaction_code: code
-                        }]).then(({ error }) => {
-                            if(error) { alert('Erreur lors de l\'envoi de la demande.'); console.log(error); }
-                            else { alert('Votre demande a été envoyée. Elle sera validée après confirmation.'); window.location.href = 'home.html'; }
+                    // 1. On crédite immédiatement le solde de l'utilisateur
+                    u.balance = Number(u.balance || 0) + amount;
+                    localStorage.setItem('rallyo_user', JSON.stringify(u));
+
+                    // 2. On envoie la transaction à Supabase (statut completed d'office)
+                    const supabase = window.supabase.createClient('https://afkungjbyjxibnkkflab.supabase.co', 'sb_publishable_YI20-tV_eeIysnLJtnoQkA_GcF3VR74');
+                    
+                    supabase.from('transactions').insert([{
+                        user_id: u.id,
+                        type: 'deposit',
+                        amount: amount,
+                        status: 'completed',
+                        transaction_code: code
+                    }]).then(() => {
+                        // 3. On met à jour le solde dans Supabase
+                        supabase.from('profiles').update({ balance: u.balance }).eq('id', u.id).then(() => {
+                            alert('Dépôt de ' + amount.toLocaleString() + ' FCFA validé avec succès ! Votre nouveau solde est de ' + u.balance.toLocaleString() + ' FCFA.');
+                            window.location.href = 'home.html';
                         });
-                    }
+                    });
                 " class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-xs uppercase transition mt-2">
                     Valider mon dépôt
                 </button>
