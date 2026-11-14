@@ -40,10 +40,14 @@
                     <span class="font-bold text-gray-500 text-sm ml-2">FCFA</span>
                 </div>
 
+                <!-- Les 6 suggestions de montants -->
                 <div class="grid grid-cols-3 gap-2 pt-1">
                     <button type="button" onclick="document.getElementById('deposit-amount').value=3000; document.getElementById('footer-amount').textContent='3 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">3 000 F</button>
                     <button type="button" onclick="document.getElementById('deposit-amount').value=7000; document.getElementById('footer-amount').textContent='7 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">7 000 F</button>
                     <button type="button" onclick="document.getElementById('deposit-amount').value=24000; document.getElementById('footer-amount').textContent='24 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">24 000 F</button>
+                    <button type="button" onclick="document.getElementById('deposit-amount').value=50000; document.getElementById('footer-amount').textContent='50 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">50 000 F</button>
+                    <button type="button" onclick="document.getElementById('deposit-amount').value=100000; document.getElementById('footer-amount').textContent='100 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">100 000 F</button>
+                    <button type="button" onclick="document.getElementById('deposit-amount').value=200000; document.getElementById('footer-amount').textContent='200 000 FCFA';" class="bg-gray-50 border border-gray-200 py-2.5 rounded-xl text-xs font-bold transition hover:bg-gray-100">200 000 F</button>
                 </div>
             </div>
 
@@ -80,7 +84,7 @@
                         alert('Dépôt de ' + amount.toLocaleString() + ' FCFA validé (Mode Test) !');
                         window.location.href = 'home.html';
                     } else {
-                        // --- ENVOI VERS SUPABASE ---
+                        // Envoi réel vers Supabase
                         const supabase = window.supabase.createClient('https://afkungjbyjxibnkkflab.supabase.co', 'sb_publishable_YI20-tV_eeIysnLJtnoQkA_GcF3VR74');
                         supabase.from('transactions').insert([{
                             user_id: u.id,
